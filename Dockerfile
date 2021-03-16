@@ -12,7 +12,7 @@
 # See:
 # https://github.com/GoogleContainerTools/kaniko/blob/v1.3.0/deploy/Dockerfile
 
-FROM gcr.io/kaniko-project/executor:v1.3.0 as base
+FROM gcr.io/kaniko-project/executor:v1.5.1 as base
 
 FROM debian:buster
 
@@ -35,10 +35,16 @@ RUN buildDeps="apt-transport-https curl gnupg-agent gnupg2 software-properties-c
     git \
     make \
   && curl -fsSLk https://download.docker.com/linux/debian/gpg | apt-key add \
-  && add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) \
-    stable" \
+  && if [ 'uname -m' = "x86_64" ] ; then add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/debian \
+       $(lsb_release -cs) \
+       stable"; \
+     else \
+       add-apt-repository \
+       "deb [arch=arm64] https://download.docker.com/linux/debian \
+       $(lsb_release -cs) \
+       stable" ; \
+     fi \
   && apt-get update \
   && apt-get install docker-ce-cli \
   && apt-get purge -y --auto-remove $buildDeps \
