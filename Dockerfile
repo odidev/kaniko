@@ -35,7 +35,7 @@ RUN buildDeps="apt-transport-https curl gnupg-agent gnupg2 software-properties-c
     git \
     make \
   && curl -fsSLk https://download.docker.com/linux/debian/gpg | apt-key add \
-  && if [ 'uname -m' = "x86_64" ] ; then add-apt-repository \
+  && if [ `uname -m` = "x86_64" ] ; then add-apt-repository \
        "deb [arch=amd64] https://download.docker.com/linux/debian \
        $(lsb_release -cs) \
        stable"; \
